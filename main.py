@@ -24,7 +24,7 @@ def main():
         print(f'{n_paths} svg paths detected, only the first one will be processed \n')
         print('chose number of points for the discretization of the svg path. Please enter an integer number. 500 is a good basis\n')
         n_points = int(input())
-        points = read_svg_path_and_return_XY_tab(path_list[0], n_points=500)
+        points = read_svg_path_and_return_XY_tab(path_list[0], n_points=n_points)
         #format the list of points from svg coordinate system to matplotlib coordinate system
         points = format_list_of_points(points)
         #plot the detected path for pre-visualization
