@@ -9,6 +9,10 @@ NB_OF_SPACE_REPEATS = 1
 SPACE = 1000
 NB_OF_DRAG = 500
 OPACITY_ON = True
+START_EMPTY = False
+
+fade = colors.to_rgb("cyan") + (0.0,)
+mycolors = colors.LinearSegmentedColormap.from_list('my',[fade, "purple"])
 
 def center_list_of_values(L):
     L = L - min(np.absolute(L))-max(np.absolute(L))/2
@@ -30,7 +34,6 @@ def create_circle_around_center(center, radius):
     return X, Y
 
 def visualize(Fourier_serie_terms, N, fig_lims):
-
     #fig settings
     #------------------------------------------------
     fig, ax = plt.subplots(facecolor = 'black')
@@ -49,40 +52,62 @@ def visualize(Fourier_serie_terms, N, fig_lims):
     #------------------------------------------------
     #Fourier serie terms for all time t of the interval of Time
     g_N = np.sum(Fourier_serie_terms, axis=0)
-
     #Initialize plots
     #------------------------------------------------
     Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, markersize = 3)[0]
     Circles = [plt.plot([], [], '-', color = (255/255, 255/255, 255/255), linewidth=0.5)[0] for _ in range(2*N+1)]
-    if OPACITY_ON :
-        redfade = colors.to_rgb("yellow") + (0.0,)
-        myred = colors.LinearSegmentedColormap.from_list('my',[redfade, "red"])
-        lines = LineCollection([], cmap=myred, lw=3, norm=plt.Normalize(0,1))
-        ax.add_collection(lines)
+    if START_EMPTY :
+        if OPACITY_ON :
+            #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
+            lines = LineCollection([], cmap=mycolors, lw=3, norm=plt.Normalize(0,1))
+            ax.add_collection(lines)
+        else :
+            line = plt.plot([], [], '-', color = (255/255, 0/255, 0/255), linewidth=3)[0]
     else :
-        line = plt.plot([], [], '-', color = (255/255, 0/255, 0/255), linewidth=3)[0]
-
+            #if starting empty is turned to false, collection is initialized
+            points = np.array([g_N.real, g_N.imag]).T.reshape(-1, 1, 2)
+            segments = np.concatenate([points[:-1], points[1:]], axis=1)   
+            #the array argument is also initialized 
+            alphas_fix_length = np.array([_/g_N.shape[0] for _ in range(g_N.shape[0])])
+            #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
+            lines = LineCollection(segments, array=alphas_fix_length ,cmap=mycolors, lw=3, norm=plt.Normalize(0,1))
+            ax.add_collection(lines)
     #------------------------------------------------
-
     def animate(i):
         g_i = g_N[:i]
-        if OPACITY_ON :
-            alphas = np.array([_/i for _ in range(i)])
-            lines.set_array(alphas)
-            points = np.array([g_i.real, g_i.imag]).T.reshape(-1, 1, 2)
-            segments = np.concatenate([points[:-1], points[1:]], axis=1)            
-            lines.set_segments(segments)
-        else :
-            line.set_data(g_i.real, g_i.imag)
+        if START_EMPTY :
+            if OPACITY_ON :
+                #Array used to map the colormap on the segments of the line collection
+                alphas = np.array([_/i for _ in range(i)])
+                #update array
+                lines.set_array(alphas)
+                points = np.array([g_i.real, g_i.imag]).T.reshape(-1, 1, 2)
+                segments = np.concatenate([points[:-1], points[1:]], axis=1)   
+                #Update of the plot         
+                lines.set_segments(segments)
+            else :
+                #Update of the plot  
+                line.set_data(g_i.real, g_i.imag)
+        else : 
+            #if drawing does not start empty, the opacity of the plot is the only thing to update
+            if OPACITY_ON :
+                last = alphas_fix_length[-1]
+                alphas_fix_length[1:] = alphas_fix_length[:-1]
+                alphas_fix_length[0] = last
+                lines.set_array(alphas_fix_length)
+        #Sorting vectors using their amplitude
         vectors = list(Fourier_serie_terms[:,i])
         vectors.sort(key=lambda z: np.absolute(z), reverse = True) 
         amplitudes = np.absolute(vectors)
+        #Computing the cumulated sum at time t
         cumulated_vectors = np.array([np.sum(vectors[:k+1]) for k in range(len(vectors))])
         cumulated_vectors = np.concatenate((np.zeros((1,)),cumulated_vectors))
+        #Update vectors
         Vectors.set_data(cumulated_vectors.real, cumulated_vectors.imag)
         for k, circle in enumerate(Circles) :
             X,Y = create_circle_around_center(cumulated_vectors[k], amplitudes[k])
+            #Update circles
             circle.set_data(X, Y)
-        
+    #set up animation    
     ani = animation.FuncAnimation(fig, animate, frames=NB_OF_SPACE_REPEATS*g_N.shape[0], interval=10)
     return ani
