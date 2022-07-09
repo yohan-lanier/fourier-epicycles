@@ -13,7 +13,7 @@ resources on fourier series and fourier transform :
 
 import numpy as np
 from scipy.integrate import quad 
-
+from tqdm import tqdm
 
 def g(t, Time, X, Y):
     '''Complex Representation of points defined by x_table and y_table during the time_table period in the complex plane at time t'''
@@ -33,11 +33,16 @@ def to_integrate_I(t, n, Time, X, Y):
     return np.imag(to_integrate)
 
 def compute_cn(Time, X, Y, N):
-    r_cn = np.array([quad(to_integrate_R, 0, 1, args=(n, Time, X, Y), limit=100, full_output=1)[0] for n in range(-N, N+1)])
-    i_cn = np.array([quad(to_integrate_I, 0, 1, args=(n, Time, X, Y), limit=100, full_output=1)[0] for n in range(-N, N+1)])
+    print('\nCompute real components of cn coefficient\n')
+    r_cn = np.array([quad(to_integrate_R, 0, 1, args=(n, Time, X, Y), limit=100, full_output=1)[0] for n in tqdm(range(-N, N+1))])
+    print('\nCompute imag components of cn coefficient\n')
+    i_cn = np.array([quad(to_integrate_I, 0, 1, args=(n, Time, X, Y), limit=100, full_output=1)[0] for n in tqdm(range(-N, N+1))])
     cn = np.concatenate((r_cn, i_cn)).reshape(2,r_cn.shape[0]).T
     return cn
 
 def compute_fourier_serie_terms(cn, t, N):
+    '''
+    Compute the terms of the fourier serie of order N at time t using the complex exponential formulation
+    '''
     g_N = (cn[:,0]+1j*cn[:,1])*np.array([np.exp(1j*2*np.pi*n*t) for n in range(-N, N+1)])
     return g_N
