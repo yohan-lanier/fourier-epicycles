@@ -33,9 +33,9 @@ def to_integrate_I(t, n, Time, X, Y):
     return np.imag(to_integrate)
 
 def compute_cn(Time, X, Y, N):
-    print('\nCompute real components of cn coefficient\n')
+    print('\nComputing real components of cn coefficients\n')
     r_cn = np.array([quad(to_integrate_R, 0, 1, args=(n, Time, X, Y), limit=100, full_output=1)[0] for n in tqdm(range(-N, N+1))])
-    print('\nCompute imag components of cn coefficient\n')
+    print('\nComputing imag components of cn coefficients\n')
     i_cn = np.array([quad(to_integrate_I, 0, 1, args=(n, Time, X, Y), limit=100, full_output=1)[0] for n in tqdm(range(-N, N+1))])
     cn = np.concatenate((r_cn, i_cn)).reshape(2,r_cn.shape[0]).T
     return cn
