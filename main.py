@@ -16,6 +16,8 @@ def main(args):
     n_points = args['n_points']
     se = args['se']
     oo = args['oo']
+    tail_color = args['tail_color']
+    head_color = args['head_color']
 
     if file.split('.')[-1] == 'svg':
         path_list = extract_paths_from_svg_file(file)
@@ -37,8 +39,8 @@ def main(args):
         print('\nComputing serie coefficients for all times t\n')
         SerieCoef = np.array([compute_fourier_serie_terms(cn, t, N) for t in tqdm(Time)]).T
         #Create the animation
-        mycolors = define_color_map('c','r')
-        anim = visualize(SerieCoef, N, fig_lims, mycolors)
+        mycolors = define_color_map(head_color, tail_color)
+        anim = visualize(SerieCoef, N, fig_lims, mycolors, Start_empty=se, Opacity_on=oo)
         plt.show()
 
 if __name__ == '__main__':
@@ -48,6 +50,8 @@ if __name__ == '__main__':
     arguments.add_argument('-n_points', default = 500, type = int, help = 'Number of points used to discretize the svg path')
     arguments.add_argument('-se', default = False, help = 'A boolean used to determine if the animation starts with an empty drawing or not')
     arguments.add_argument('-oo', default = True, help = 'A boolean used to determine if an opacity effect is used in the animation')
+    arguments.add_argument('-head_color', default = 'white', type = str, help = 'string representing the color of the head of the animation. A color gradient will be created between head and tale.\n Possible options are r, b, g, b, c, y, p, o, w. Default is w')
+    arguments.add_argument('-tail_color', default = 'white', type = str, help = 'string representing the color of the tail of the animation. A color gradient will be created between head and tale.\n Possible options are r, b, g, b, c, y, p, o, w. Default is w')
     args = vars(arguments.parse_args())
     main(args)
 

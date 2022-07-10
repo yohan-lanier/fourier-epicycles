@@ -7,8 +7,8 @@ import matplotlib.colors as colors
 
 NB_OF_SPACE_REPEATS = 1
 
-def define_color_map(head_color, tale_color):
-    fade = colors.to_rgb(tale_color) + (0.0,)
+def define_color_map(head_color, tail_color):
+    fade = colors.to_rgb(tail_color) + (0.0,)
     mycolors = colors.LinearSegmentedColormap.from_list('my',[fade, head_color])
     return mycolors
 
