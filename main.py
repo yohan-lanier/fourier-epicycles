@@ -2,28 +2,34 @@ from ReadSvgPath import *
 from ComputeFourierSerie import *
 from Visualize import *
 import sys
+import argparse
 import numpy as np
 
 def plot_points(points):
     plt.plot(points[:,0], points[:,1], '+-')
     plt.show()
 
-def main():
-    if len(sys.argv) == 3:
-        file = sys.argv[-2]
-        N = int(sys.argv[-1])
-    elif len(sys.argv) == 2 : 
-        N = 10
-        file = sys.argv[-1]
-    else : 
-        print('invalid number of arguments')
+def main(args):
+    
+    # if len(sys.argv) == 3:
+    #     file = sys.argv[-2]
+    #     N = int(sys.argv[-1])
+    # elif len(sys.argv) == 2 : 
+    #     N = 10
+    #     file = sys.argv[-1]
+    # else : 
+    #     print('invalid number of arguments')
+
+    file = args['file']
+    N = args['order']
+    n_points = args['n_points']
+    se = args['se']
+    oo = args['oo']
 
     if file.split('.')[-1] == 'svg':
         path_list = extract_paths_from_svg_file(file)
         n_paths = len(path_list)
-        print(f'{n_paths} svg paths detected, only the first one will be processed \n')
-        print('chose number of points for the discretization of the svg path. Please enter an integer number. 500 is a good basis\n')
-        n_points = int(input())
+        print(f'{n_paths} svg paths detected. If more than 1 only the first one will be processed \n')
         points = read_svg_path_and_return_XY_tab(path_list[0], n_points=n_points)
         #format the list of points from svg coordinate system to matplotlib coordinate system
         points = format_list_of_points(points)
@@ -43,5 +49,12 @@ def main():
         plt.show()
 
 if __name__ == '__main__':
-    main()
+    arguments = argparse.ArgumentParser()
+    arguments.add_argument('file', help ='String containing the path to the svg file')
+    arguments.add_argument('-order', metavar = 'N', default = 10, type= int, help = 'Order to of Fourier sum, a value of N will result in 2*N+1 terms in the sum')
+    arguments.add_argument('-n_points', default = 500, type = int, help = 'Number of points used to discretize the svg path')
+    arguments.add_argument('-se', default = False, help = 'A boolean used to determine if the animation starts with an empty drawing or not')
+    arguments.add_argument('-oo', default = True, help = 'A boolean used to determine if an opacity effect is used in the animation')
+    args = vars(arguments.parse_args())
+    main(args)
 
