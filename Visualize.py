@@ -6,8 +6,6 @@ import matplotlib.colors as colors
 
 
 NB_OF_SPACE_REPEATS = 1
-SPACE = 1000
-NB_OF_DRAG = 500
 OPACITY_ON = True
 START_EMPTY = False
 
@@ -15,7 +13,7 @@ fade = colors.to_rgb("cyan") + (0.0,)
 mycolors = colors.LinearSegmentedColormap.from_list('my',[fade, "purple"])
 
 def center_list_of_values(L):
-    L = L - min(np.absolute(L))-max(np.absolute(L))/2
+    L = L - min(L)/2 - max(L)/2
     return L
 
 def format_list_of_points(points):
@@ -54,15 +52,15 @@ def visualize(Fourier_serie_terms, N, fig_lims):
     g_N = np.sum(Fourier_serie_terms, axis=0)
     #Initialize plots
     #------------------------------------------------
-    Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, markersize = 3)[0]
-    Circles = [plt.plot([], [], '-', color = (255/255, 255/255, 255/255), linewidth=0.5)[0] for _ in range(2*N+1)]
+    Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, markersize = 2)[0]
+    Circles = [plt.plot([], [], '-', color = (255/255, 255/255, 255/255), linewidth=0.5, alpha=0.5)[0] for _ in range(2*N+1)]
     if START_EMPTY :
         if OPACITY_ON :
             #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
-            lines = LineCollection([], cmap=mycolors, lw=3, norm=plt.Normalize(0,1))
+            lines = LineCollection([], cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
             ax.add_collection(lines)
         else :
-            line = plt.plot([], [], '-', color = (255/255, 0/255, 0/255), linewidth=3)[0]
+            line = plt.plot([], [], '-', color = (255/255, 0/255, 0/255), linewidth=2)[0]
     else :
             #if starting empty is turned to false, collection is initialized
             points = np.array([g_N.real, g_N.imag]).T.reshape(-1, 1, 2)
@@ -70,7 +68,7 @@ def visualize(Fourier_serie_terms, N, fig_lims):
             #the array argument is also initialized 
             alphas_fix_length = np.array([_/g_N.shape[0] for _ in range(g_N.shape[0])])
             #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
-            lines = LineCollection(segments, array=alphas_fix_length ,cmap=mycolors, lw=3, norm=plt.Normalize(0,1))
+            lines = LineCollection(segments, array=alphas_fix_length ,cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
             ax.add_collection(lines)
     #------------------------------------------------
     def animate(i):
