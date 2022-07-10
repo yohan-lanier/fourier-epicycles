@@ -87,10 +87,10 @@ def visualize(Fourier_serie_terms, N, fig_lims, Start_empty = False, Opacity_on 
         else : 
             #if drawing does not start empty, the opacity of the plot is the only thing to update
             if Opacity_on :
-                last = alphas_fix_length[-1]
-                alphas_fix_length[1:] = alphas_fix_length[:-1]
-                alphas_fix_length[0] = last
-                lines.set_array(alphas_fix_length)
+                alphas = alphas_fix_length.copy()
+                alphas[:i+1] = alphas_fix_length[-(i+1):]
+                alphas[i+1:] = alphas_fix_length[:-(i+1)]
+                lines.set_array(alphas)
         #Sorting vectors using their amplitude
         vectors = list(Fourier_serie_terms[:,i])
         vectors.sort(key=lambda z: np.absolute(z), reverse = True) 
