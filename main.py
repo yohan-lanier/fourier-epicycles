@@ -10,15 +10,6 @@ def plot_points(points):
     plt.show()
 
 def main(args):
-    
-    # if len(sys.argv) == 3:
-    #     file = sys.argv[-2]
-    #     N = int(sys.argv[-1])
-    # elif len(sys.argv) == 2 : 
-    #     N = 10
-    #     file = sys.argv[-1]
-    # else : 
-    #     print('invalid number of arguments')
 
     file = args['file']
     N = args['order']
@@ -30,6 +21,7 @@ def main(args):
         path_list = extract_paths_from_svg_file(file)
         n_paths = len(path_list)
         print(f'{n_paths} svg paths detected. If more than 1 only the first one will be processed \n')
+        print('Discretizing svg path')
         points = read_svg_path_and_return_XY_tab(path_list[0], n_points=n_points)
         #format the list of points from svg coordinate system to matplotlib coordinate system
         points = format_list_of_points(points)
