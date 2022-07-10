@@ -7,8 +7,10 @@ import matplotlib.colors as colors
 
 NB_OF_SPACE_REPEATS = 1
 
-fade = colors.to_rgb("cyan") + (0.0,)
-mycolors = colors.LinearSegmentedColormap.from_list('my',[fade, "purple"])
+def define_color_map(head_color, tale_color):
+    fade = colors.to_rgb(tale_color) + (0.0,)
+    mycolors = colors.LinearSegmentedColormap.from_list('my',[fade, head_color])
+    return mycolors
 
 def center_list_of_values(L):
     L = L - min(L)/2 - max(L)/2
@@ -29,7 +31,7 @@ def create_circle_around_center(center, radius):
     X, Y = radius * np.cos(theta) + center.real, radius * np.sin(theta) + center.imag
     return X, Y
 
-def visualize(Fourier_serie_terms, N, fig_lims, Start_empty = False, Opacity_on = True):
+def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, Opacity_on = True):
     #fig settings
     #------------------------------------------------
     fig, ax = plt.subplots(facecolor = 'black')

@@ -37,7 +37,8 @@ def main(args):
         print('\nComputing serie coefficients for all times t\n')
         SerieCoef = np.array([compute_fourier_serie_terms(cn, t, N) for t in tqdm(Time)]).T
         #Create the animation
-        anim = visualize(SerieCoef, N, fig_lims)
+        mycolors = define_color_map('c','r')
+        anim = visualize(SerieCoef, N, fig_lims, mycolors)
         plt.show()
 
 if __name__ == '__main__':
