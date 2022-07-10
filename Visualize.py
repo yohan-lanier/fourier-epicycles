@@ -6,8 +6,6 @@ import matplotlib.colors as colors
 
 
 NB_OF_SPACE_REPEATS = 1
-OPACITY_ON = True
-START_EMPTY = False
 
 fade = colors.to_rgb("cyan") + (0.0,)
 mycolors = colors.LinearSegmentedColormap.from_list('my',[fade, "purple"])
@@ -31,7 +29,7 @@ def create_circle_around_center(center, radius):
     X, Y = radius * np.cos(theta) + center.real, radius * np.sin(theta) + center.imag
     return X, Y
 
-def visualize(Fourier_serie_terms, N, fig_lims):
+def visualize(Fourier_serie_terms, N, fig_lims, Start_empty = False, Opacity_on = True):
     #fig settings
     #------------------------------------------------
     fig, ax = plt.subplots(facecolor = 'black')
@@ -54,8 +52,8 @@ def visualize(Fourier_serie_terms, N, fig_lims):
     #------------------------------------------------
     Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, markersize = 2)[0]
     Circles = [plt.plot([], [], '-', color = (255/255, 255/255, 255/255), linewidth=0.5, alpha=0.5)[0] for _ in range(2*N+1)]
-    if START_EMPTY :
-        if OPACITY_ON :
+    if Start_empty :
+        if Opacity_on :
             #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
             lines = LineCollection([], cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
             ax.add_collection(lines)
@@ -73,8 +71,8 @@ def visualize(Fourier_serie_terms, N, fig_lims):
     #------------------------------------------------
     def animate(i):
         g_i = g_N[:i]
-        if START_EMPTY :
-            if OPACITY_ON :
+        if Start_empty :
+            if Opacity_on :
                 #Array used to map the colormap on the segments of the line collection
                 alphas = np.array([_/i for _ in range(i)])
                 #update array
@@ -88,7 +86,7 @@ def visualize(Fourier_serie_terms, N, fig_lims):
                 line.set_data(g_i.real, g_i.imag)
         else : 
             #if drawing does not start empty, the opacity of the plot is the only thing to update
-            if OPACITY_ON :
+            if Opacity_on :
                 last = alphas_fix_length[-1]
                 alphas_fix_length[1:] = alphas_fix_length[:-1]
                 alphas_fix_length[0] = last
