@@ -50,9 +50,10 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, O
     #------------------------------------------------
     #Fourier serie terms for all time t of the interval of Time
     g_N = np.sum(Fourier_serie_terms, axis=0)
+    n_points = g_N.shape[0]
     #Initialize plots
     #------------------------------------------------
-    Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, markersize = 2)[0]
+    Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, alpha = 0.5, markersize = 2)[0]
     Circles = [plt.plot([], [], '-', color = (255/255, 255/255, 255/255), linewidth=0.5, alpha=0.5)[0] for _ in range(2*N+1)]
     if Start_empty :
         if Opacity_on :
@@ -66,9 +67,12 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, O
             points = np.array([g_N.real, g_N.imag]).T.reshape(-1, 1, 2)
             segments = np.concatenate([points[:-1], points[1:]], axis=1)   
             #the array argument is also initialized 
-            alphas_fix_length = np.array([_/g_N.shape[0] for _ in range(g_N.shape[0])])
+            alphas_init = np.array([_/n_points for _ in range(n_points)])
+            # width_gradient_number = int(n_points*0.05)
+            # linewidths_init = np.concatenate((np.array([1.5 for _ in range(n_points-width_gradient_number)]), np.linspace(1.5, 3.5, width_gradient_number)))
             #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
-            lines = LineCollection(segments, array=alphas_fix_length ,cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
+            #lines = LineCollection(segments, array=alphas_init, linewidths = linewidths_init, cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
+            lines = LineCollection(segments, array=alphas_init, cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
             ax.add_collection(lines)
     #------------------------------------------------
     def animate(i):
@@ -87,12 +91,16 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, O
                 #Update of the plot  
                 line.set_data(g_i.real, g_i.imag)
         else : 
-            #if drawing does not start empty, the opacity of the plot is the only thing to update
+            #if drawing does not start empty, the opacity and linewidths of the plot are the only things to update
             if Opacity_on :
-                alphas = alphas_fix_length.copy()
-                alphas[:i+1] = alphas_fix_length[-(i+1):]
-                alphas[i+1:] = alphas_fix_length[:-(i+1)]
+                alphas = alphas_init.copy()
+                alphas[:i+1] = alphas_init[-(i+1):]
+                alphas[i+1:] = alphas_init[:-(i+1)]
                 lines.set_array(alphas)
+                # new_linewidths = linewidths_init.copy()
+                # new_linewidths[:i+1] = linewidths_init[-(i+1):]
+                # new_linewidths[i+1:] = linewidths_init[:-(i+1)]
+                # lines.set_linewidth(new_linewidths)
         #Sorting vectors using their amplitude
         vectors = list(Fourier_serie_terms[:,i])
         vectors.sort(key=lambda z: np.absolute(z), reverse = True) 
@@ -107,5 +115,5 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, O
             #Update circles
             circle.set_data(X, Y)
     #set up animation    
-    ani = animation.FuncAnimation(fig, animate, frames=NB_OF_SPACE_REPEATS*g_N.shape[0], interval=10)
+    ani = animation.FuncAnimation(fig, animate, frames=NB_OF_SPACE_REPEATS*n_points, interval=10)
     return ani
