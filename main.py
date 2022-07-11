@@ -55,7 +55,7 @@ def main(args):
             save_path = r''+save_path
             writervideo = animation.FFMpegWriter(fps=30) 
             dpi=200
-            anim.save(save_path, writer=writervideo, dpi=dpi)
+            anim.save(save_path, writer=writervideo, dpi=dpi, progress_callback = lambda i, n: print(f'Saving frame {i} of {n}'))
         plt.show()
 
 if __name__ == '__main__':
