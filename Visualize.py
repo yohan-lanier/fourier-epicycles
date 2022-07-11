@@ -31,7 +31,7 @@ def create_circle_around_center(center, radius):
     X, Y = radius * np.cos(theta) + center.real, radius * np.sin(theta) + center.imag
     return X, Y
 
-def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, Opacity_on = True):
+def visualize(Fourier_serie_terms, N, fig_lims, mycolors, tail_color, head_color, Start_empty = False, Opacity_on = True):
     #fig settings
     #------------------------------------------------
     fig, ax = plt.subplots(facecolor = 'black')
@@ -53,7 +53,7 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, O
     n_points = g_N.shape[0]
     #Initialize plots
     #------------------------------------------------
-    Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, alpha = 0.5, markersize = 2)[0]
+    Vectors = plt.plot([], [], 'o-', color = (255/255, 255/255, 255/255), linewidth=1, alpha = 0.5, markersize = 0.8)[0]
     Circles = [plt.plot([], [], '-', color = (255/255, 255/255, 255/255), linewidth=0.5, alpha=0.5)[0] for _ in range(2*N+1)]
     if Start_empty :
         if Opacity_on :
@@ -72,8 +72,9 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, O
             # linewidths_init = np.concatenate((np.array([1.5 for _ in range(n_points-width_gradient_number)]), np.linspace(1.5, 3.5, width_gradient_number)))
             #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
             #lines = LineCollection(segments, array=alphas_init, linewidths = linewidths_init, cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
-            lines = LineCollection(segments, array=alphas_init, cmap=mycolors, lw=2, norm=plt.Normalize(0,1))
+            lines = LineCollection(segments, array=alphas_init, cmap=mycolors, lw=1.5, norm=plt.Normalize(0,1))
             ax.add_collection(lines)
+            leading_dot = plt.plot([], [], 'o', color = tail_color, markerfacecolor = head_color, lw = 1, markersize = 6)[0]
     #------------------------------------------------
     def animate(i):
         g_i = g_N[:i]
@@ -97,6 +98,9 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, Start_empty = False, O
                 alphas[:i+1] = alphas_init[-(i+1):]
                 alphas[i+1:] = alphas_init[:-(i+1)]
                 lines.set_array(alphas)
+                #update leading dot
+                if len(g_i)>0:
+                    leading_dot.set_data(g_i[-1].real, g_i[-1].imag)
                 # new_linewidths = linewidths_init.copy()
                 # new_linewidths[:i+1] = linewidths_init[-(i+1):]
                 # new_linewidths[i+1:] = linewidths_init[:-(i+1)]

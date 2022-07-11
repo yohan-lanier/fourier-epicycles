@@ -47,7 +47,7 @@ def main(args):
         SerieCoef = np.array([compute_fourier_serie_terms(cn, t, N) for t in tqdm(Time)]).T
         #Create the animation
         mycolors = define_color_map(head_color, tail_color)
-        anim = visualize(SerieCoef, N, fig_lims, mycolors, Start_empty=se, Opacity_on=oo)
+        anim = visualize(SerieCoef, N, fig_lims, mycolors, tail_color, head_color, Start_empty=se, Opacity_on=oo)
         if save_path != None :
             print('\n-------------------------------------')
             print('Saving the animation')
