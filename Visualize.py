@@ -68,6 +68,8 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, tail_color, head_color
             segments = np.concatenate([points[:-1], points[1:]], axis=1)   
             #the array argument is also initialized 
             alphas_init = np.array([_/n_points for _ in range(n_points)])
+            alphas_init[:-1] = alphas_init[1:]
+            alphas_init[-1] = 0
             # width_gradient_number = int(n_points*0.05)
             # linewidths_init = np.concatenate((np.array([1.5 for _ in range(n_points-width_gradient_number)]), np.linspace(1.5, 3.5, width_gradient_number)))
             #Normalize is used so that the set_array method can pass in an array containing numbers between 0 and 1
@@ -99,8 +101,7 @@ def visualize(Fourier_serie_terms, N, fig_lims, mycolors, tail_color, head_color
                 alphas[i+1:] = alphas_init[:-(i+1)]
                 lines.set_array(alphas)
                 #update leading dot
-                if len(g_i)>0:
-                    leading_dot.set_data(g_i[-1].real, g_i[-1].imag)
+                leading_dot.set_data(g_N[i].real, g_N[i].imag)
                 # new_linewidths = linewidths_init.copy()
                 # new_linewidths[:i+1] = linewidths_init[-(i+1):]
                 # new_linewidths[i+1:] = linewidths_init[:-(i+1)]
