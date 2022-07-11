@@ -24,9 +24,14 @@ def extract_paths_from_svg_file(filename):
 			#clear line
 			line = line.strip()
 			#detect path begining
-			if line[:8] == '<path d=':
+			if line[:5] == '<path':
 				path_counter+=1
-				path_list.append(line[9:])
+				#search for variable d in the path
+				for _ in range(5, len(line)):
+					if line[_]+line[_+1]=='d=':
+						break
+				#append the path to the list
+				path_list.append(line[_+3:])
 				in_path = True
 			elif in_path == False :
 				pass
