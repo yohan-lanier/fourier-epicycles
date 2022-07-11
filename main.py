@@ -1,3 +1,4 @@
+from Exceptions import test_a_color
 from ReadSvgPath import *
 from ComputeFourierSerie import *
 from Visualize import *
@@ -19,9 +20,11 @@ def main(args):
     se = args['se']
     oo = args['oo']
     tail_color = args['tail_color']
+    tail_color = test_a_color(tail_color)
     head_color = args['head_color']
+    head_color = test_a_color(head_color)
     save_path = args['save_path']
-
+    
     if file.split('.')[-1] == 'svg':
         path_list = extract_paths_from_svg_file(file)
         n_paths = len(path_list)
@@ -67,7 +70,7 @@ if __name__ == '__main__':
     arguments.add_argument('-oo', metavar = 'Opacity on', default = True, help = 'A boolean used to determine if an opacity effect is used in the animation')
     arguments.add_argument('-head_color', default = 'white', type = str, help = 'string representing the color of the head of the animation. A color gradient will be created between head and tail. Possible options are r, b, g, b, c, y, p, o, w. Default is w')
     arguments.add_argument('-tail_color', default = 'white', type = str, help = 'string representing the color of the tail of the animation. A color gradient will be created between head and tail. Possible options are r, b, g, b, c, y, p, o, w. Default is w')
-    arguments.add_argument('-save_path', type = str, help = 'if used, the animation will be saved to the location indicated by this path under the name at the end of it. The path needs to end with video-name.mp4, It should look something like c://Users/user-name/Desktop/video.mp4' )
+    arguments.add_argument('-save_path', type = str, help = 'if used, the animation will be saved to the location indicated by this path under the name at the end of it. The path needs to end with video-name.mp4, It should look something like c://Users/user-name/Desktop/video.mp4. Gif format is also valid' )
     args = vars(arguments.parse_args())
     main(args)
 
