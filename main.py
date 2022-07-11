@@ -1,9 +1,11 @@
 from ReadSvgPath import *
 from ComputeFourierSerie import *
 from Visualize import *
-import sys
 import argparse
 import numpy as np
+import matplotlib
+matplotlib.rcParams['animation.ffmpeg_path'] = r'C:\\Users\\yohan\\anaconda3\\Library\\bin\\ffmpeg.exe'
+
 
 def plot_points(points):
     plt.plot(points[:,0], points[:,1], '+-')
@@ -18,12 +20,15 @@ def main(args):
     oo = args['oo']
     tail_color = args['tail_color']
     head_color = args['head_color']
+    save_path = args['save_path']
 
     if file.split('.')[-1] == 'svg':
         path_list = extract_paths_from_svg_file(file)
         n_paths = len(path_list)
-        print(f'{n_paths} svg paths detected. If more than 1 only the first one will be processed \n')
+        print('\n-------------------------------------')
+        print(f'{n_paths} svg paths detected. If more than 1 only the first one will be processed')
         print('Discretizing svg path')
+        print('-------------------------------------\n')
         points = read_svg_path_and_return_XY_tab(path_list[0], n_points=n_points)
         #format the list of points from svg coordinate system to matplotlib coordinate system
         points = format_list_of_points(points)
@@ -36,11 +41,21 @@ def main(args):
         #Compute the cn coefficient of the Fourier serie
         cn = compute_cn(Time, X, Y, N)
         #Compute the serie coefficient for all time t in table T
-        print('\nComputing serie coefficients for all times t\n')
+        print('\n-------------------------------------')
+        print('Computing serie coefficients for all times t')
+        print('-------------------------------------\n')
         SerieCoef = np.array([compute_fourier_serie_terms(cn, t, N) for t in tqdm(Time)]).T
         #Create the animation
         mycolors = define_color_map(head_color, tail_color)
         anim = visualize(SerieCoef, N, fig_lims, mycolors, Start_empty=se, Opacity_on=oo)
+        if save_path != None :
+            print('\n-------------------------------------')
+            print('Saving the animation')
+            print('-------------------------------------\n')
+            save_path = r''+save_path
+            writervideo = animation.FFMpegWriter(fps=30) 
+            dpi=200
+            anim.save(save_path, writer=writervideo, dpi=dpi)
         plt.show()
 
 if __name__ == '__main__':
@@ -48,10 +63,11 @@ if __name__ == '__main__':
     arguments.add_argument('file', help ='String containing the path to the svg file')
     arguments.add_argument('-order', metavar = 'N', default = 10, type= int, help = 'Order to of Fourier sum, a value of N will result in 2*N+1 terms in the sum')
     arguments.add_argument('-n_points', default = 500, type = int, help = 'Number of points used to discretize the svg path')
-    arguments.add_argument('-se', default = False, help = 'A boolean used to determine if the animation starts with an empty drawing or not')
-    arguments.add_argument('-oo', default = True, help = 'A boolean used to determine if an opacity effect is used in the animation')
-    arguments.add_argument('-head_color', default = 'white', type = str, help = 'string representing the color of the head of the animation. A color gradient will be created between head and tale.\n Possible options are r, b, g, b, c, y, p, o, w. Default is w')
-    arguments.add_argument('-tail_color', default = 'white', type = str, help = 'string representing the color of the tail of the animation. A color gradient will be created between head and tale.\n Possible options are r, b, g, b, c, y, p, o, w. Default is w')
+    arguments.add_argument('-se', metavar = 'Start empty', default = False, help = 'A boolean used to determine if the animation starts with an empty drawing or not')
+    arguments.add_argument('-oo', metavar = 'Opacity on', default = True, help = 'A boolean used to determine if an opacity effect is used in the animation')
+    arguments.add_argument('-head_color', default = 'white', type = str, help = 'string representing the color of the head of the animation. A color gradient will be created between head and tail. Possible options are r, b, g, b, c, y, p, o, w. Default is w')
+    arguments.add_argument('-tail_color', default = 'white', type = str, help = 'string representing the color of the tail of the animation. A color gradient will be created between head and tail. Possible options are r, b, g, b, c, y, p, o, w. Default is w')
+    arguments.add_argument('-save_path', type = str, help = 'if used, the animation will be saved to the location indicated by this path under the name at the end of it. The path needs to end with video-name.mp4, It should look something like c://Users/user-name/Desktop/video.mp4' )
     args = vars(arguments.parse_args())
     main(args)
 
