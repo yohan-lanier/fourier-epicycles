@@ -25,7 +25,8 @@ def main(args):
     head_color = test_a_color(head_color)
     save_path = args['save_path']
     
-    if file.split('.')[-1] == 'svg':
+    ext = file.split('.')[-1]
+    if ext == 'svg':
         path_list = extract_paths_from_svg_file(file)
         n_paths = len(path_list)
         print('\n-------------------------------------')
@@ -60,6 +61,11 @@ def main(args):
             dpi=200
             anim.save(save_path, writer=writervideo, dpi=dpi, progress_callback = lambda i, n: print(f'Saving frame {i} of {n}'))
         plt.show()
+    else : 
+        print('\n-------------------------------------')
+        print(f'This version only processes svg files. You passed in a {ext} which is not supported. Try again with an svg')
+        print('-------------------------------------\n')
+
 
 if __name__ == '__main__':
     arguments = argparse.ArgumentParser()
