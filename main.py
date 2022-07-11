@@ -1,4 +1,4 @@
-from Exceptions import test_a_color
+from Exceptions import NoPathInSVG, test_a_color
 from ReadSvgPath import *
 from ComputeFourierSerie import *
 from Visualize import *
@@ -33,6 +33,12 @@ def main(args):
         print(f'{n_paths} svg paths detected. If more than 1 only the first one will be processed')
         print('Discretizing svg path')
         print('-------------------------------------\n')
+        try :
+            if n_paths == 0:
+                raise NoPathInSVG
+        except NoPathInSVG as npis :
+                print(npis)
+                return
         points = read_svg_path_and_return_XY_tab(path_list[0], n_points=n_points)
         #format the list of points from svg coordinate system to matplotlib coordinate system
         points = format_list_of_points(points)

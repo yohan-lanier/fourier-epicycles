@@ -27,3 +27,9 @@ class InvalidColor(Exception):
         print('-------------------------------------\n')
         c = input()
         return c
+
+class NoPathInSVG(Exception):
+    def __init__(self):
+        super().__init__()
+    def __str__(self):
+        print('No path was found in the input file. Check if your svg contains a path and try again')
