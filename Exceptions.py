@@ -8,6 +8,9 @@ def is_color_in_accepted_colors(color):
     else : return color
 
 def test_a_color(color):
+    '''
+    test wether the input color is accepted by the program
+    '''
     try : 
         is_color_in_accepted_colors(color)
         return color
@@ -17,6 +20,9 @@ def test_a_color(color):
         return color
 
 class InvalidColor(Exception):
+    '''
+    class for Invalid color exception
+    '''
     def __init__(self, c):
         super().__init__()
         self._value = c
