@@ -5,7 +5,9 @@ from Visualize import *
 import argparse
 import numpy as np
 import matplotlib
-matplotlib.rcParams['animation.ffmpeg_path'] = r'C:\\Users\\yohan\\anaconda3\\Library\\bin\\ffmpeg.exe'
+###############################################################
+#WARNING : Change this path to the location of your writer
+matplotlib.rcParams['animation.ffmpeg_path'] = r'C:\\Users\\USERNAME\\anaconda3\\Library\\bin\\ffmpeg.exe'
 
 
 def plot_points(points):
