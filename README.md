@@ -7,7 +7,7 @@ A set of python methods allowing to create epicycles drawing animations using an
 
 # Requirements
 
-Code is based on python3. All required packages can be found in the requirements.txt file
+Code is based on python3. All required packages can be found in the requirements.txt file.
 Note that this code was created on a windows system
 
 # How to use the code
@@ -40,7 +40,7 @@ options:
 ```
 **@Warning : To use the save_path option, one needs to indicate the path to the matplotlib writer in the file main.py**
 
-**@Warning 2 : If on sets -se argument to False, -oo has to be True, no exception has yet been coded to catch this**
+**@Warning 2 : If one sets -se argument to False, -oo has to be True, no exception has yet been coded to catch this**
 
 The input svg file has to contain at list one path otherwise no animation can be rendered
 
