@@ -30,10 +30,10 @@ options:
   -oo Opacity on        A boolean used to determine if an opacity effect is used in the animation
   -head_color HEAD_COLOR
                         string representing the color of the head of the animation. A color gradient will be created between head and      
-                        tail. Possible options are r, b, g, b, c, y, p, o, w. Default is w
+                        tail. Possible options are [b, g, r, c, m, y, k, w, blue, orange, green, red, purple, brown, pink, gray, olive, cyan]. Default is w
   -tail_color TAIL_COLOR
                         string representing the color of the tail of the animation. A color gradient will be created between head and      
-                        tail. Possible options are r, b, g, b, c, y, p, o, w. Default is w
+                        tail. Possible options are [b, g, r, c, m, y, k, w, blue, orange, green, red, purple, brown, pink, gray, olive, cyan]. Default is w
   -save_path SAVE_PATH  if used, the animation will be saved to the location indicated by this path under the name at the end of it. The   
                         path needs to end with video-name.mp4, It should look something like c://Users/user-name/Desktop/video.mp4. Gif    
                         format is also valid
